@@ -1,48 +1,66 @@
 @echo off
-rem AutoBuilder is a simple Windows batch for launching a build watch for 
-rem one of your plugins. To use, specify the prefix and the pluginDir variables
-rem below and then let her rip!
+cls
+echo AutoBuilder is a simple Windows batch for launching a build watch for 
+echo one of your plugins. It will also prelaunch obsidian to your Dev Vault.
+echo -----------------------------------------------------------------------
+echo:
+
+rem -----------------------------------------------------------------------
+rem To use, specify the configuration variables below and let her rip!
+rem -----------------------------------------------------------------------
 
 rem Configuration:
-set prefix=obsidian-z2k
+rem -----------------------------------------------------------------------
+rem Note: if you have spaces in your dev vault name, replace them with %%20
+rem   (and yes, two percentages)
+rem
+set prefix=obsidian-
 set pluginDir=C:\Users\YourUserName\Obsidian\My Vault\.obsidian\plugins
+set devVault=Dev%%20Vault
 
-echo Z2K Autobuilder launch script
-echo:
+rem Initialization:
+rem -----------------------------------------------------------------------
+set obsidianCommand=obsidian://open?vault=
 setlocal enabledelayedexpansion
 set count=0
 
+rem Go to the plugin directory
+rem -----------------------------------------------------------------------
 cd %pluginDir%
 
+rem Launch Obsidian
+rem -----------------------------------------------------------------------
+start %obsidianCommand%%devVault%
+
+rem Read the available plugins
+rem -----------------------------------------------------------------------
 echo The following plugins are ready for building:
 echo:
-
-:
-:: Read in files
 for /d %%x in (%prefix%*) do (
   set /a count=count+1
   set choice[!count!]=%%x
 )
 
-:
-echo.
+rem Prompt for which one to use
+rem -----------------------------------------------------------------------
+echo:
 echo Please select the plugin you wish to launch a build-watch for:
-echo.
+echo:
 
-:
-:: Print list of files
+rem Print list of files
+rem -----------------------------------------------------------------------
 for /l %%x in (1,1,!count!) do (
    echo %%x] !choice[%%x]!
 )
-echo.
+echo:
 
-:
-:: Retrieve User input
+rem Print list of files
+rem -----------------------------------------------------------------------
 set /p select=? 
-echo.
+echo:
 
-:
-:: Proceed 
+rem Now build watch!
+rem -----------------------------------------------------------------------
 echo Now auto building !choice[%select%]!
 echo:
 cd !choice[%select%]!
